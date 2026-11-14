@@ -7,7 +7,7 @@ require go.yaml.in/yaml/v3 v3.0.5
 require (
 	github.com/itchyny/gojq v0.12.19 // indirect
 	github.com/itchyny/timefmt-go v0.1.8 // indirect
-	github.com/lowmagic/compa-engine v0.0.0-20261114170718-983e62405241
+	github.com/lowmagic/compa-engine v0.0.0-20261114174801-6cedb48ae3d4
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3 // indirect
 	golang.org/x/text v0.27.0 // indirect
 )
