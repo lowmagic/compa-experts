@@ -25,8 +25,6 @@ The rule no change may weaken: every package here is written fresh, from public 
 - The Go package name is the directory name without hyphens. The ID is the manifest's, and never begins with a
   prefix a private expert set uses.
 - Dependencies run one way. An expert here uses catalogs here. Nothing here names a package of another repository.
-- `compose` reads three things of a manifest: its kind, its ID and the catalogs an expert declares. Everything else
-  about a package is the engine's loader's to judge, and `compose` does not repeat it.
 - A package's content is checked by the engine, never by a copy of its rules: the tests call
   `github.com/lowmagic/compa-engine/engine/expertcheck`.
 

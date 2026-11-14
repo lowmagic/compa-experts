@@ -15,11 +15,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/lowmagic/compa-engine/engine/compose"
 	"github.com/lowmagic/compa-engine/engine/expertcheck"
 	"go.yaml.in/yaml/v3"
 
 	"github.com/lowmagic/compa-experts/catalogs/files"
-	"github.com/lowmagic/compa-experts/compose"
 	"github.com/lowmagic/compa-experts/experts/artifacts"
 )
 

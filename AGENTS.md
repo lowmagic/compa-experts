@@ -1,7 +1,7 @@
 # Working on compa-experts
 
-Expert and catalog packages for compa, each a Go package exporting an `fs.FS`, and `compose`, which merges the chosen
-ones into the bundle a compa build ships.
+Expert and catalog packages for compa, each a Go package exporting an `fs.FS`, which a compa build merges into the
+bundle it ships with compa-engine's `engine/compose`.
 
 Read before changing behavior:
 
