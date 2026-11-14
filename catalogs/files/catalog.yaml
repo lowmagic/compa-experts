@@ -1,0 +1,17 @@
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Catalog
+metadata:
+  id: generic.files
+  version: 0.1.0
+  title: Generic file tools
+  description: Tools that list, search and sample files of any kind. They read any file, so the catalog declares no capture kind.
+spec:
+  engineApi: '>=0.2.1 <0.3.0'
+  tests:
+    - generic.files.ls
+    - generic.files.find
+    - generic.files.tree
+    - generic.files.grep
+    - generic.files.head
+    - generic.files.tail
+    - generic.files.count

@@ -1,0 +1,14 @@
+apiVersion: compa.lowmag.cc/expert/v1alpha3
+kind: Expert
+metadata:
+  id: generic.artifacts
+  version: 0.1.0
+  title: Unfamiliar artifacts
+  summary: Reading files nobody has described yet - what is there, what the logs repeat, where a string occurs
+spec:
+  engineApi: '>=0.2.1 <0.3.0'
+  analyst: analyst.md
+  catalogs:
+    - id: generic.files
+      version: '>=0.1.0 <0.2.0'
+      tools: [ls, find, tree, grep, head, tail, count]

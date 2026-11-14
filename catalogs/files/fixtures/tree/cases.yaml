@@ -1,0 +1,11 @@
+cases:
+  - name: three levels by default
+    output: |
+      config
+      config/network
+      logs
+  - name: one level
+    params: {max_depth: 1}
+    output: |
+      config
+      logs

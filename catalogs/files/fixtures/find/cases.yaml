@@ -1,0 +1,13 @@
+cases:
+  - name: by name at any depth
+    params: {glob: '*.yaml'}
+    output: |
+      config/app.yaml
+      config/network/eth0.yaml
+  - name: to a depth beneath a directory
+    params: {glob: '*.yaml', dir: config, max_depth: 1}
+    output: |
+      config/app.yaml
+  - name: no file of that name
+    params: {glob: '*.conf'}
+    output: ''

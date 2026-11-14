@@ -1,0 +1,15 @@
+cases:
+  - name: beneath a directory, the first matches kept and the rest said cut
+    params: {pattern: refused, path: logs, glob: '*.log', max_matches: 2}
+    truncated: true
+    output: |
+      logs/worker.log:1:2026-03-01T11:01:00Z worker[7]: connection to db.example.com refused
+      logs/worker.log:2:2026-03-01T11:02:00Z worker[7]: connection to db.example.com refused
+  - name: one file, case ignored, with a line of context
+    params: {pattern: error, path: logs/worker.log, ignore_case: true, context: 1}
+    output: |
+      logs/worker.log-6-2026-03-01T11:06:00Z worker[7]: giving up after 5 attempts
+      logs/worker.log:7:2026-03-01T11:07:00Z worker[7]: ERROR queue stalled
+  - name: nothing matches
+    params: {pattern: absent}
+    output: ''

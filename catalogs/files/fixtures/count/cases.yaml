@@ -1,0 +1,11 @@
+cases:
+  - name: every line, the most frequent first
+    params: {path: logs/worker.log}
+    output: |
+      {"count":5,"first":"logs/worker.log:1","last":"logs/worker.log:5","sample":"2026-03-01T11:01:00Z worker[7]: connection to db.example.com refused"}
+      {"count":1,"first":"logs/worker.log:7","last":"logs/worker.log:7","sample":"2026-03-01T11:07:00Z worker[7]: ERROR queue stalled"}
+      {"count":1,"first":"logs/worker.log:6","last":"logs/worker.log:6","sample":"2026-03-01T11:06:00Z worker[7]: giving up after 5 attempts"}
+  - name: only the lines matching a pattern
+    params: {path: logs/worker.log, pattern: refused}
+    output: |
+      {"count":5,"first":"logs/worker.log:1","last":"logs/worker.log:5","sample":"2026-03-01T11:01:00Z worker[7]: connection to db.example.com refused"}

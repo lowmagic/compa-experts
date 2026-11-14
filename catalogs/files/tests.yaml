@@ -1,0 +1,170 @@
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Tests
+tests:
+  - id: generic.files.ls
+    version: 0.1.0
+    summary: The entries directly inside a directory, each with its kind, size and modification time.
+    description: >-
+      Lists what one directory holds, without descending: one entry a line, in lexical order, its kind (file or
+      directory), size in bytes and modification time before its path. The artifact root when no directory is given.
+    params:
+      dir:
+        type: string
+        default: ''
+        maxLength: 1024
+        description: The directory, relative to the artifact root; the root when empty.
+    run:
+      - find: {path: '{{dir}}', type: any, max_depth: 1, details: true}
+    output: {format: lines}
+    fixtures: fixtures/ls
+  - id: generic.files.find
+    version: 0.1.0
+    summary: The files beneath a directory whose names match a glob, to a depth.
+    description: >-
+      Lists the files under a directory whose base name matches a glob, one path a line, in lexical order.
+      max_depth counts from the directory, an entry directly inside it at depth 1; 0 sets no limit.
+    params:
+      glob:
+        type: string
+        maxLength: 256
+        description: A glob over each file's base name, such as *.log.
+      dir:
+        type: string
+        default: ''
+        maxLength: 1024
+        description: The directory to search beneath; the artifact root when empty.
+      max_depth:
+        type: integer
+        default: 0
+        minimum: 0
+        maximum: 64
+    run:
+      - find: {path: '{{dir}}', glob: '{{glob}}', max_depth: '{{max_depth}}'}
+    output: {format: lines}
+    fixtures: fixtures/find
+  - id: generic.files.tree
+    version: 0.1.0
+    summary: The directories beneath a directory, to a depth.
+    description: >-
+      Lists the directories under a directory, one path a line, in lexical order, to max_depth levels, 3 by default.
+      It shows how a set of files is laid out before any is read.
+    params:
+      dir:
+        type: string
+        default: ''
+        maxLength: 1024
+        description: The directory to list beneath; the artifact root when empty.
+      max_depth:
+        type: integer
+        default: 3
+        minimum: 1
+        maximum: 64
+    run:
+      - find: {path: '{{dir}}', type: dir, max_depth: '{{max_depth}}'}
+    output: {format: lines}
+    fixtures: fixtures/tree
+  - id: generic.files.grep
+    version: 0.1.0
+    summary: The lines matching a pattern in a file, or in the files beneath a directory, with context.
+    description: >-
+      Searches a file, or every file under a directory whose base name matches glob, for a regular expression, and
+      returns each matching line as its file, line number and text, separated by colons, with the context asked for,
+      a context line separated by hyphens. At most max_matches matches, the first found; a search cut there is
+      marked truncated.
+    params:
+      pattern:
+        type: string
+        maxLength: 512
+        description: A regular expression in RE2 syntax.
+      path:
+        type: string
+        default: ''
+        maxLength: 1024
+        description: A file, or a directory to search beneath; the artifact root when empty.
+      glob:
+        type: string
+        default: ''
+        maxLength: 256
+        description: Under a directory, the files to search, by base name; every file when empty.
+      context:
+        type: integer
+        default: 0
+        minimum: 0
+        maximum: 10
+        description: Lines kept before and after each match.
+      ignore_case:
+        type: boolean
+        default: false
+      max_matches:
+        type: integer
+        default: 100
+        minimum: 1
+        maximum: 1000
+    run:
+      - grep:
+          pattern: '{{pattern}}'
+          path: '{{path}}'
+          glob: '{{glob}}'
+          ignore_case: '{{ignore_case}}'
+          context_before: '{{context}}'
+          context_after: '{{context}}'
+          max_matches: '{{max_matches}}'
+    output: {format: lines}
+    fixtures: fixtures/grep
+  - id: generic.files.head
+    version: 0.1.0
+    summary: The first lines of a file.
+    description: The first lines of one file, 40 by default, as they are stored.
+    params:
+      path:
+        type: string
+        maxLength: 1024
+        description: The file, relative to the artifact root.
+      lines:
+        type: integer
+        default: 40
+        minimum: 1
+        maximum: 400
+    run:
+      - read: {path: '{{path}}', head: '{{lines}}'}
+    output: {format: text}
+    fixtures: fixtures/head
+  - id: generic.files.tail
+    version: 0.1.0
+    summary: The last lines of a file.
+    description: The last lines of one file, 40 by default, as they are stored.
+    params:
+      path:
+        type: string
+        maxLength: 1024
+        description: The file, relative to the artifact root.
+      lines:
+        type: integer
+        default: 40
+        minimum: 1
+        maximum: 400
+    run:
+      - read: {path: '{{path}}', tail: '{{lines}}'}
+    output: {format: text}
+    fixtures: fixtures/tail
+  - id: generic.files.count
+    version: 0.1.0
+    summary: How often each repeated line of a log occurs, with its first and last occurrence.
+    description: >-
+      Groups the lines of one file that match a pattern, every line when none is given, and returns one JSON object
+      a line for each group: its count, where it first and last occurs as file and line, and a sample line, the most
+      frequent first. It says what a log repeats before any of it is read.
+    params:
+      path:
+        type: string
+        maxLength: 1024
+        description: The file, relative to the artifact root.
+      pattern:
+        type: string
+        default: ''
+        maxLength: 512
+        description: A regular expression in RE2 syntax; every line when empty.
+    run:
+      - logs.count: {path: '{{path}}', pattern: '{{pattern}}'}
+    output: {format: lines}
+    fixtures: fixtures/count

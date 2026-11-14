@@ -1,0 +1,15 @@
+cases:
+  - name: the root
+    output: |
+      file	84	2026-03-01T12:00:00Z	README.txt
+      dir	-	2026-03-01T12:00:00Z	config
+      dir	-	2026-03-01T12:00:00Z	logs
+  - name: one directory, not what lies beneath it
+    params: {dir: config}
+    output: |
+      file	40	2026-03-01T12:00:00Z	config/app.yaml
+      dir	-	2026-03-01T12:00:00Z	config/network
+  - name: a directory outside the root is refused
+    params: {dir: ../elsewhere}
+    status: failed
+    reason: escapes the artifact root
