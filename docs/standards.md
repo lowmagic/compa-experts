@@ -37,10 +37,12 @@ The rule no change may weaken: every package here is written fresh, from public 
 
 ## Testing
 
-`internal/packages` holds the checks every package passes: its directive embeds its whole directory; every package,
-composed, loads through the engine's check with no warning; and each catalog tool has `fixtures/<tool>/cases.yaml`,
-whose runs against the catalog's `fixtures/root` return what the file says. A new tool comes with its cases, and a
-case that shows the tool refusing what it must refuse.
+`internal/packages` holds the checks every package passes: its directive embeds its whole directory; and every package,
+composed, passes the engine's own check with no warning, which runs each catalog tool's `fixtures/<tool>/cases.yaml`
+against the catalog's `fixtures/root` and compares what each run returns with what the file says, in the format
+compa-engine's [Expert API](https://github.com/lowmagic/compa-engine/blob/main/docs/EXPERT_API.md#fixture-cases)
+defines. A new tool comes with its cases, and a case that shows the tool refusing what it must refuse;
+`compa expert check --update` writes their results, and the diff is read before it is committed.
 
 ## Go
 

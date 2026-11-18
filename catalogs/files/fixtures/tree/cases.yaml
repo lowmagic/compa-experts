@@ -1,11 +1,20 @@
+# Synthetic: runs of generic.files.tree over ../root, which no real system
+# wrote. Results are written by compa expert check --update and read.
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Cases
+tool: generic.files.tree
+root: ../root
+modified: 2026-03-01T12:00:00Z
 cases:
   - name: three levels by default
+    status: ok
     output: |
       config
       config/network
       logs
   - name: one level
     params: {max_depth: 1}
+    status: ok
     output: |
       config
       logs

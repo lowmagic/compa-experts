@@ -1,11 +1,20 @@
+# Synthetic: runs of generic.files.count over ../root, which no real system
+# wrote. Results are written by compa expert check --update and read.
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Cases
+tool: generic.files.count
+root: ../root
+modified: 2026-03-01T12:00:00Z
 cases:
   - name: every line, the most frequent first
     params: {path: logs/worker.log}
+    status: ok
     output: |
       {"count":5,"first":"logs/worker.log:1","last":"logs/worker.log:5","sample":"2026-03-01T11:01:00Z worker[7]: connection to db.example.com refused"}
       {"count":1,"first":"logs/worker.log:7","last":"logs/worker.log:7","sample":"2026-03-01T11:07:00Z worker[7]: ERROR queue stalled"}
       {"count":1,"first":"logs/worker.log:6","last":"logs/worker.log:6","sample":"2026-03-01T11:06:00Z worker[7]: giving up after 5 attempts"}
   - name: only the lines matching a pattern
     params: {path: logs/worker.log, pattern: refused}
+    status: ok
     output: |
       {"count":5,"first":"logs/worker.log:1","last":"logs/worker.log:5","sample":"2026-03-01T11:01:00Z worker[7]: connection to db.example.com refused"}

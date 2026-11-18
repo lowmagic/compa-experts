@@ -2,7 +2,7 @@ apiVersion: compa.lowmag.cc/expert/v1alpha2
 kind: Catalog
 metadata:
   id: generic.files
-  version: 0.1.0
+  version: 0.1.1
   title: Generic file tools
   description: Tools that list, search and sample files of any kind. They read any file, so the catalog declares no capture kind.
 spec:

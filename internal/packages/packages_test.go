@@ -13,11 +13,9 @@ import (
 	"sort"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/lowmagic/compa-engine/engine/compose"
 	"github.com/lowmagic/compa-engine/engine/expertcheck"
-	"go.yaml.in/yaml/v3"
 
 	"github.com/lowmagic/compa-experts/catalogs/files"
 	"github.com/lowmagic/compa-experts/experts/artifacts"
@@ -175,7 +173,9 @@ func TestEveryPackageIsListed(t *testing.T) {
 
 // TestComposedPackagesLoad: every package of the repository, composed into
 // one bundle and written out as the engine writes a bundle, loads through
-// the engine's own check with no error and no warning.
+// the engine's own check with no error and no warning, and every catalog
+// tool's fixture cases return what they say (compa-engine's
+// docs/EXPERT_API.md §Fixture cases).
 func TestComposedPackagesLoad(t *testing.T) {
 	b, err := compose.Bundle(all...)
 	if err != nil {
@@ -186,99 +186,10 @@ func TestComposedPackagesLoad(t *testing.T) {
 		t.Fatal(err)
 	}
 	var out bytes.Buffer
-	if err := expertcheck.Command([]string{"--fail-on-warning", filepath.Join(root, "experts")}, &out); err != nil {
+	if err := expertcheck.Command(context.Background(), []string{"--fail-on-warning", filepath.Join(root, "experts")}, &out); err != nil {
 		t.Errorf("%v\n%s", err, out.String())
 	}
-}
-
-// A tool's cases.yaml: each run against the catalog's fixtures/root and
-// what it must return.
-type cases struct {
-	Cases []struct {
-		Name   string         `yaml:"name"`
-		Params map[string]any `yaml:"params"`
-		// Output is the whole output of a run that succeeds.
-		Output *string `yaml:"output"`
-		// Truncated is whether the run says its output was cut.
-		Truncated bool `yaml:"truncated"`
-		// Status and Reason are given for a run that does not succeed;
-		// the reason is a part of what the engine says.
-		Status string `yaml:"status"`
-		Reason string `yaml:"reason"`
-	} `yaml:"cases"`
-}
-
-// fixtureTime is every fixture entry's modification time, since git keeps
-// none and a listing shows it.
-var fixtureTime = time.Date(2026, 3, 1, 12, 0, 0, 0, time.UTC)
-
-// TestCatalogFixtures runs every case of every catalog tool through the
-// engine's loader and runner, and requires each tool to have one.
-func TestCatalogFixtures(t *testing.T) {
-	packages, err := expertcheck.Load(filepath.Join(repo, "catalogs"), filepath.Join(repo, "experts"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	catalogs, err := os.ReadDir(filepath.Join(repo, "catalogs"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, c := range catalogs {
-		dir := filepath.Join(repo, "catalogs", c.Name())
-		var manifest struct {
-			Metadata struct{ ID string }
-			Spec     struct{ Tests []string }
-		}
-		raw, err := os.ReadFile(filepath.Join(dir, "catalog.yaml"))
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := yaml.Unmarshal(raw, &manifest); err != nil {
-			t.Fatal(err)
-		}
-		root := t.TempDir()
-		if err := os.CopyFS(root, os.DirFS(filepath.Join(dir, "fixtures", "root"))); err != nil {
-			t.Fatal(err)
-		}
-		err = filepath.WalkDir(root, func(p string, _ fs.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			return os.Chtimes(p, fixtureTime, fixtureTime)
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-		for _, tool := range manifest.Spec.Tests {
-			short := strings.TrimPrefix(tool, manifest.Metadata.ID+".")
-			t.Run(tool, func(t *testing.T) {
-				var cs cases
-				raw, err := os.ReadFile(filepath.Join(dir, "fixtures", short, "cases.yaml"))
-				if err != nil {
-					t.Fatal(err)
-				}
-				dec := yaml.NewDecoder(bytes.NewReader(raw))
-				dec.KnownFields(true)
-				if err := dec.Decode(&cs); err != nil {
-					t.Fatal(err)
-				}
-				if len(cs.Cases) == 0 {
-					t.Fatal("no case")
-				}
-				for _, c := range cs.Cases {
-					got := packages.Run(context.Background(), root, tool, c.Params)
-					switch {
-					case c.Output != nil:
-						if got.Status != "ok" || got.Output != *c.Output || got.Truncated != c.Truncated {
-							t.Errorf("%s: status %s (%s), truncated %v, output:\n%s\nwant ok, truncated %v, output:\n%s", c.Name, got.Status, got.Reason, got.Truncated, got.Output, c.Truncated, *c.Output)
-						}
-					case c.Status == "" || c.Reason == "":
-						t.Errorf("%s: a case gives its output, or its status and reason", c.Name)
-					case got.Status != c.Status || !strings.Contains(got.Reason, c.Reason):
-						t.Errorf("%s: status %s, reason %q; want %s, a reason holding %q", c.Name, got.Status, got.Reason, c.Status, c.Reason)
-					}
-				}
-			})
-		}
+	if strings.Contains(out.String(), "; 0 cases run") {
+		t.Errorf("no fixture case ran:\n%s", out.String())
 	}
 }

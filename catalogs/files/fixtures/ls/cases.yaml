@@ -1,15 +1,25 @@
+# Synthetic: runs of generic.files.ls over ../root, which no real system
+# wrote. Results are written by compa expert check --update and read.
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Cases
+tool: generic.files.ls
+root: ../root
+modified: 2026-03-01T12:00:00Z
 cases:
   - name: the root
+    status: ok
     output: |
       file	84	2026-03-01T12:00:00Z	README.txt
       dir	-	2026-03-01T12:00:00Z	config
       dir	-	2026-03-01T12:00:00Z	logs
   - name: one directory, not what lies beneath it
     params: {dir: config}
+    status: ok
     output: |
       file	40	2026-03-01T12:00:00Z	config/app.yaml
       dir	-	2026-03-01T12:00:00Z	config/network
   - name: a directory outside the root is refused
     params: {dir: ../elsewhere}
     status: failed
-    reason: escapes the artifact root
+    reason: 'stage 0: path "../elsewhere" escapes the artifact root'
+    output: ''

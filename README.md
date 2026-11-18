@@ -31,5 +31,5 @@ bundle, err := compose.Bundle(files.FS, artifacts.FS)
 ```
 
 - `make check` runs the checks CI runs, offline: the linter, the tests and `go mod tidy -diff`. The tests load every
-  package through the engine's own loader and run every catalog tool against its fixtures.
+  package through the engine's own check, which runs every catalog tool's fixture cases.
 - `make standards` checks the org standards copies and needs the network.

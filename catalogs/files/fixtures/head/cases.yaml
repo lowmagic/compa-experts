@@ -1,14 +1,24 @@
+# Synthetic: runs of generic.files.head over ../root, which no real system
+# wrote. Results are written by compa expert check --update and read.
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Cases
+tool: generic.files.head
+root: ../root
+modified: 2026-03-01T12:00:00Z
 cases:
   - name: the first two lines
     params: {path: logs/app.log, lines: 2}
+    status: ok
     output: |
       2026-03-01T10:01:00Z app[101]: request 1 served in 13 ms
       2026-03-01T10:02:00Z app[101]: request 2 served in 16 ms
   - name: no lines is not a count
     params: {path: logs/app.log, lines: 0}
     status: unavailable
-    reason: below the minimum 1
+    reason: 'test generic.files.head: parameter "lines": 0 is below the minimum 1'
+    output: ''
   - name: a file outside the root is refused
     params: {path: ../outside}
     status: failed
-    reason: escapes the artifact root
+    reason: 'stage 0: path "../outside" escapes the artifact root'
+    output: ''

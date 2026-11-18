@@ -1,6 +1,14 @@
+# Synthetic: runs of generic.files.tail over ../root, which no real system
+# wrote. Results are written by compa expert check --update and read.
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Cases
+tool: generic.files.tail
+root: ../root
+modified: 2026-03-01T12:00:00Z
 cases:
   - name: the last two lines
     params: {path: logs/app.log, lines: 2}
+    status: ok
     output: |
       2026-03-01T10:11:00Z app[101]: request 11 served in 43 ms
       2026-03-01T10:12:00Z app[101]: request 12 served in 46 ms

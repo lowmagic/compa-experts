@@ -1,13 +1,23 @@
+# Synthetic: runs of generic.files.find over ../root, which no real system
+# wrote. Results are written by compa expert check --update and read.
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Cases
+tool: generic.files.find
+root: ../root
+modified: 2026-03-01T12:00:00Z
 cases:
   - name: by name at any depth
     params: {glob: '*.yaml'}
+    status: ok
     output: |
       config/app.yaml
       config/network/eth0.yaml
   - name: to a depth beneath a directory
     params: {glob: '*.yaml', dir: config, max_depth: 1}
+    status: ok
     output: |
       config/app.yaml
   - name: no file of that name
     params: {glob: '*.conf'}
+    status: ok
     output: ''
