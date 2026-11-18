@@ -1,0 +1,17 @@
+# Compiled by compa expert routing from a keys file and the experts'
+# spec.routing.keys; do not edit.
+apiVersion: compa.lowmag.cc/routing/v1alpha1
+kind: RoutingLibrary
+revision: connectivity-1
+keys:
+  - id: connectivity
+    name: Connectivity
+    experts:
+      - id: generic.connections
+        relationship: primary
+        provenance:
+          - source: generic.connections
+            ref: experts/connections/expert.yaml#spec.routing.keys
+    provenance:
+      - source: compa-experts
+        ref: data/routing/keys.yaml

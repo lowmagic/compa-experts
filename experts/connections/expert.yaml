@@ -1,0 +1,17 @@
+apiVersion: compa.lowmag.cc/expert/v1alpha3
+kind: Expert
+metadata:
+  id: generic.connections
+  version: 0.1.0
+  title: Failed connections in a service's logs
+  summary: A service's failed network connections as its own logs record them - refused, timed out, reset, unreachable
+spec:
+  engineApi: '>=0.2.1 <0.3.0'
+  analyst: analyst.md
+  routing:
+    keys: [connectivity]
+  catalogs:
+    - id: generic.files
+      version: '>=0.1.0 <0.2.0'
+      tools: [grep, count, tail]
+  tests: [generic.connections.failures]

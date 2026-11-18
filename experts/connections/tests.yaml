@@ -1,0 +1,26 @@
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Tests
+tests:
+  - id: generic.connections.failures
+    version: 0.1.0
+    summary: The lines of one log that report a failed connection, with their line numbers.
+    description: >-
+      The lines of one file that hold the C library's wording for a failed connection - connection refused, connection
+      timed out, connection reset, no route to host, network is unreachable - case aside, each with its line number,
+      the first 200. Reports unavailable, running nothing, when the file is not among the artifacts.
+    params:
+      path:
+        type: string
+        maxLength: 1024
+        description: The log, relative to the artifact root.
+    preconditions:
+      - exists: '{{path}}'
+    run:
+      - grep:
+          pattern: 'connection refused|refused|connection timed out|timed out|connection reset|reset by peer|no route to host|network is unreachable'
+          path: '{{path}}'
+          ignore_case: true
+          max_matches: 200
+    output: {format: lines}
+    interpret: analyst.md#what-the-failures-say
+    fixtures: fixtures/failures

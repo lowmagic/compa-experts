@@ -1,6 +1,7 @@
-// Package packages_test holds the checks every expert and catalog package
-// of this repository passes: what it embeds, that the engine loads it, and
-// that each catalog tool returns what its fixtures say.
+// Package packages_test holds the checks every expert, catalog and routing
+// package of this repository passes: what it embeds, that the engine loads
+// it, that each tool returns what its fixtures say, and that the routing
+// library is the engine's compile of the keys and the manifests.
 package packages_test
 
 import (
@@ -19,18 +20,21 @@ import (
 
 	"github.com/lowmagic/compa-experts/catalogs/files"
 	"github.com/lowmagic/compa-experts/experts/artifacts"
+	"github.com/lowmagic/compa-experts/experts/connections"
+	"github.com/lowmagic/compa-experts/routing"
 )
 
 const repo = "../.."
 
 // all is every package of this repository. A package missing from it fails
 // TestEveryPackageIsListed.
-var all = []fs.FS{files.FS, artifacts.FS}
+var all = []fs.FS{routing.FS, files.FS, artifacts.FS, connections.FS}
 
-// packageDirs are the directories holding one package each.
+// packageDirs are the directories holding one package each: the routing
+// library, and each catalog and expert.
 func packageDirs(t *testing.T) []string {
 	t.Helper()
-	var dirs []string
+	dirs := []string{"routing"}
 	for _, kind := range []string{"catalogs", "experts"} {
 		entries, err := os.ReadDir(filepath.Join(repo, kind))
 		if err != nil {
@@ -43,6 +47,18 @@ func packageDirs(t *testing.T) []string {
 		}
 	}
 	return dirs
+}
+
+// TestRoutingLibraryIsCompiled: routing/library.yaml is what the engine
+// compiles from data/routing/keys.yaml and the experts' routing keys, at
+// its revision; write it with compa expert routing --write and a new
+// --revision.
+func TestRoutingLibraryIsCompiled(t *testing.T) {
+	t.Chdir(repo)
+	var out bytes.Buffer
+	if err := expertcheck.Routing(context.Background(), []string{"--keys", "data/routing/keys.yaml", "--library", "routing/library.yaml", "catalogs", "experts"}, &out); err != nil {
+		t.Errorf("%v\n%s", err, out.String())
+	}
 }
 
 func filesUnder(t *testing.T, fsys fs.FS) []string {

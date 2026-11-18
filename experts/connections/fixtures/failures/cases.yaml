@@ -1,0 +1,30 @@
+# Synthetic: runs of generic.connections.failures over ../root, which no real
+# system wrote. Results are written by compa expert check --update and read.
+apiVersion: compa.lowmag.cc/expert/v1alpha2
+kind: Cases
+tool: generic.connections.failures
+root: ../root
+modified: 2026-03-01T12:00:00Z
+requires: [each_failure, none, missing_file]
+cases:
+  - name: each kind of failure, and not the line served
+    covers: [each_failure]
+    params: {path: logs/client.log}
+    status: ok
+    output: |
+      logs/client.log:2:2026-03-01T09:00:05Z client[12]: connect to 192.0.2.10:5432: Connection refused
+      logs/client.log:3:2026-03-01T09:00:10Z client[12]: connect to 192.0.2.10:5432: Connection timed out
+      logs/client.log:4:2026-03-01T09:00:15Z client[12]: read from 192.0.2.10:5432: Connection reset by peer
+      logs/client.log:5:2026-03-01T09:00:20Z client[12]: connect to 198.51.100.7:443: No route to host
+      logs/client.log:6:2026-03-01T09:00:25Z client[12]: connect to 203.0.113.9:443: Network is unreachable
+  - name: a log with no failure
+    covers: [none]
+    params: {path: logs/quiet.log}
+    status: ok
+    output: ''
+  - name: a log not among the artifacts runs nothing
+    covers: [missing_file]
+    params: {path: logs/absent.log}
+    status: unavailable
+    reason: 'precondition: logs/absent.log does not exist in the artifacts'
+    output: ''

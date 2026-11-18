@@ -27,6 +27,11 @@ The rule no change may weaken: every package here is written fresh, from public 
 - Dependencies run one way. An expert here uses catalogs here. Nothing here names a package of another repository.
 - A package's content is checked by the engine, never by a copy of its rules: the tests call
   `github.com/lowmagic/compa-engine/engine/expertcheck`.
+- The routing library is a package of its own, `routing/`, embedding `library.yaml`. The keys it names are
+  `data/routing/keys.yaml`, a `RoutingLibrary` naming no expert; each expert says which keys it serves in its
+  manifest's `spec.routing.keys`. `compa expert routing --keys data/routing/keys.yaml --library routing/library.yaml
+  --write --revision <new> catalogs experts` writes the library, and `TestRoutingLibraryIsCompiled` fails when it is
+  not the engine's compile of the two.
 
 ## Versions and pins
 

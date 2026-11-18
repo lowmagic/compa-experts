@@ -1,0 +1,13 @@
+# The routing keys the experts of this repository serve. What a key is
+# belongs to a deployment; these are the generic ones a build of compa may
+# report for a case. compa expert routing compiles routing/library.yaml from
+# this file and the experts' spec.routing.keys.
+apiVersion: compa.lowmag.cc/routing/v1alpha1
+kind: RoutingLibrary
+revision: keys-1
+keys:
+  - id: connectivity
+    name: Connectivity
+    provenance:
+      - source: compa-experts
+        ref: data/routing/keys.yaml

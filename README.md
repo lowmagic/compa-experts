@@ -11,8 +11,12 @@ package that embeds its own directory and exports it as `FS`.
 |---|---|---|
 | `catalogs/files` | `generic.files` | Tools that list, search and sample files of any kind: `ls`, `find`, `tree`, `grep`, `head`, `tail`, `count` |
 | `experts/artifacts` | `generic.artifacts` | How to read a set of files nobody has described yet |
+| `experts/connections` | `generic.connections` | A service's failed network connections as its own logs record them; serves the routing key `connectivity` |
+| `routing` | — | The routing library: the routing keys the experts serve, compiled by the engine from `data/routing/keys.yaml` and the experts' manifests |
 
-The packages here are generic: they know no product.
+The packages here are generic: they know no product. A build that composes `routing` has a case whose routing key is
+`connectivity` start with `generic.connections` loaded; what routing keys a case has is the build's case source's to
+say.
 
 ## Running it
 
