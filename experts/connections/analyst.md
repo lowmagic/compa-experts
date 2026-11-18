@@ -20,19 +20,19 @@ service or its peer is installed, load it.
 ## What the failures say
 
 The wording below is the C library's for the error a connection attempt returns (Linux man-pages `connect(2)` and
-`errno(3)`); a service may print it, or its own words for it.
+`errno(3)`); a service may print it, or its own words for it. Each is what the client was told.
 
-- **Connection refused** (`ECONNREFUSED`): the attempt found no one listening on the remote address.
-- **Connection timed out** (`ETIMEDOUT`): the attempt timed out; the server may have been too busy to accept new
-  connections.
+- **Connection refused** (`ECONNREFUSED`): in `connect(2)`'s words, the attempt found no one listening on the remote
+  address.
+- **Connection timed out** (`ETIMEDOUT`): the attempt timed out before a connection was made.
 - **Connection reset** (`ECONNRESET`): a connection was reset.
-- **Network is unreachable** (`ENETUNREACH`) and **no route to host** (`EHOSTUNREACH`): the address could not be
-  reached at all.
+- **Network is unreachable** (`ENETUNREACH`) and **no route to host** (`EHOSTUNREACH`): the client was told the
+  network, or the host, the address is on was unreachable.
 
-A client's log says what the client was told, not why: that nothing listened at the address does not say whether the
-peer was down, restarting or listening elsewhere. Say what the log shows, with its lines, and what would tell the
-explanations apart: the peer's own logs for the same times, or the customer checking that the peer listens at the
-address the client uses.
+A client's log says what the client was told, never why: name no cause for it. Say what the log shows, with its lines,
+the address each names and the times they span. What bears on the peer's side at those times is the peer's own logs
+for the same times, and whether the peer listened then at the address and port the client used: a question to ask,
+which the client's log does not answer.
 
 ## When to stop
 
