@@ -37,7 +37,9 @@ The rule no change may weaken: every package here is written fresh, from public 
 
 - A package's version is `metadata.version` in its manifest, semver over what an expert or a model relies on: a
   tool's ID, its parameters and the shape of its output; an expert's ID and the tools it lists. A change to any
-  file of a package takes a new version.
+  file of a package takes a new version. `make check` runs `cmd/version-check`, compa-engine's `compa expert
+  versions` over `experts/` and `catalogs/`, which fails on a package changed since the merge base with
+  `origin/main` with its ID and version kept; the package's Go file, which embeds it, is no part of its content.
 - `go.mod` requires compa-engine at the commit the packages were checked against.
 
 ## Testing
@@ -59,4 +61,3 @@ packages. This overrides the Layout rule that it names the current release.
 Where compa-experts doesn't follow the org standards yet. These are debt to pay down, not overrides: each one should go.
 
 - There's no `docs/SPEC.md` or `docs/ROADMAP.md` yet (see [Docs](org-standards.md#docs)).
-- Nothing checks that a changed package took a new version.

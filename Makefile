@@ -7,6 +7,10 @@ check:
 	go test -race ./...
 	go mod tidy -diff
 	git ls-files -z '*.sh' | xargs -0 -r shellcheck
+	@# A changed package needs a new version, against the merge base with
+	@# origin/main; a clone without origin/main fetches it first.
+	git rev-parse -q --verify origin/main >/dev/null || git fetch -q origin main:refs/remotes/origin/main
+	go run ./cmd/version-check
 
 standards:
 	@tmp=$$(mktemp -d) && trap 'rm -rf "$$tmp"' EXIT && \
